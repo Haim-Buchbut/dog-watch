@@ -18,7 +18,7 @@ function rr(ctx, x, y, w, h, r) {
 
 export function drawRoom(ctx, room, view, opts = {}) {
   const { scale: k, ox, oy } = view;
-  const { labels = false } = opts;
+  const { visited = null } = opts;
   ctx.save();
   ctx.translate(ox, oy);
 
@@ -73,13 +73,20 @@ export function drawRoom(ctx, room, view, opts = {}) {
 
   for (const o of room.objects) drawObject(ctx, o, k);
 
-  for (const o of room.objects) {
-    if (labels) {
-      ctx.fillStyle = 'rgba(20,20,20,0.75)';
-      ctx.font = `${Math.max(9, k * 0.16)}px system-ui, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(o.label, (o.x + o.w / 2) * k, (o.y + o.h / 2) * k);
+  // Coverage review: objects the dog sniffed are tinted green, ones it never reached get a red outline.
+  if (visited) {
+    for (const o of room.objects) {
+      rr(ctx, o.x * k - 2, o.y * k - 2, o.w * k + 4, o.h * k + 4, 5);
+      if (visited.has(o.id)) {
+        ctx.fillStyle = 'rgba(46, 160, 67, 0.35)';
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = 'rgba(200, 40, 40, 0.9)';
+        ctx.lineWidth = Math.max(2, k * 0.04);
+        ctx.setLineDash([5, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
     }
   }
   ctx.restore();

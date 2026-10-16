@@ -76,6 +76,10 @@ function setControls() {
   b.classList.toggle('stop', state.running);
   $('btn-new').disabled = state.running;
   $('btn-variations').disabled = state.running;
+  // Coverage is only available for reviewing a finished search.
+  const cov = $('opt-coverage');
+  cov.disabled = state.running || !state.hasRun;
+  if (cov.disabled) cov.checked = false;
 }
 
 function showSummary() {
@@ -111,7 +115,7 @@ function frame(ts) {
   const dt = Math.min(0.1, (ts - (state.lastTs || ts)) / 1000);
   state.lastTs = ts;
   if (state.running) {
-    state.elapsed = (ts - state.startTs) / 1000;
+    state.elapsed = Math.max(0, (performance.now() - state.startTs) / 1000);
     state.dog.update(dt, state.elapsed);
     $('timer').textContent = fmt(state.elapsed);
   }
@@ -129,7 +133,7 @@ function draw(time) {
   const view = fitView(state.room, w, h, 18);
   const { dog } = state;
   drawRoom(ctx, state.room, view, {
-    labels: $('opt-labels').checked,
+    visited: !state.running && state.hasRun && $('opt-coverage').checked ? new Set(dog.visits.keys()) : null,
   });
   drawDog(ctx, dog, view, state.running ? time : 0);
 }

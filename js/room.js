@@ -93,6 +93,8 @@ function tryBuild(rng, c, grow) {
   w = Math.round((w + grow * 0.4) * 10) / 10;
   h = Math.round((h + grow * 0.3) * 10) / 10;
 
+  // Portrait orientation (long side vertical) so the room fills a phone screen.
+  if (w > h) [w, h] = [h, w];
   const room = { w, h, objects: [], bedMode };
 
   // Door

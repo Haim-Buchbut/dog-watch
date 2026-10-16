@@ -33,7 +33,6 @@ function loadRoom(seed, push = true) {
   state.elapsed = 0;
   $('room-info').textContent = `Room ${seed} · ${describeRoom(state.room)}`;
   $('timer').textContent = fmt(0);
-  $('log').innerHTML = '';
   $('summary').hidden = true;
   $('status').textContent = 'Press Start to bring the dog in';
   if (push) {
@@ -45,20 +44,12 @@ function loadRoom(seed, push = true) {
 }
 
 function logEvent(ev) {
-  const li = document.createElement('li');
-  li.className = ev.kind;
-  li.innerHTML = `<time>${fmt(ev.t, false)}</time><span></span>`;
-  li.querySelector('span').textContent = ev.text;
-  const log = $('log');
-  log.prepend(li);
-  while (log.children.length > 300) log.lastChild.remove();
   $('status').textContent =
     ev.kind === 'sniff' ? `Sniffing ${ev.obj.label}` : ev.kind === 'sit' ? 'Dog pauses…' : 'Searching the floor';
 }
 
 async function start() {
   state.dog.onEvent = logEvent;
-  $('log').innerHTML = '';
   $('summary').hidden = true;
   state.running = true;
   state.hasRun = true;
@@ -95,6 +86,7 @@ function showSummary() {
   const pct = Math.round((checked.length / total) * 100);
   const el = $('summary');
   el.innerHTML = `
+    <span class="close" aria-label="Close">×</span>
     <div class="result">✓ No indication. Room is clean.</div>
     <dl>
       <dt>Duration</dt><dd>${fmt(state.elapsed)}</dd>
@@ -182,6 +174,7 @@ $('btn-new').addEventListener('click', () => { loadRoom(randomSeedString()); set
 $('btn-variations').addEventListener('click', showVariations);
 $('btn-more').addEventListener('click', showVariations);
 $('btn-close').addEventListener('click', () => $('variations').close());
+$('summary').addEventListener('click', () => { $('summary').hidden = true; });
 
 const params = new URLSearchParams(location.search);
 const openVariations = location.hash === '#variations';

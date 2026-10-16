@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dog Watch</title>
+  <meta name="description" content="Sniffer-dog room search simulator">
+  <meta name="theme-color" content="#1f6f5c">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Dog Watch">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="icons/icon.svg" alt="" width="28" height="28">
+      <h1>Dog Watch</h1>
+    </div>
+    <p id="room-info" class="room-info"></p>
+  </header>
+
+  <section class="controls">
+    <div class="timer" id="timer" aria-live="off">00:00.0</div>
+    <button id="btn-start" class="btn primary">Start</button>
+    <button id="btn-new" class="btn">New room</button>
+    <button id="btn-variations" class="btn">Variations</button>
+    <label class="toggle"><input type="checkbox" id="opt-coverage" checked> Coverage</label>
+    <label class="toggle"><input type="checkbox" id="opt-labels"> Labels</label>
+  </section>
+
+  <main class="layout">
+    <div class="stage" id="stage">
+      <canvas id="canvas"></canvas>
+      <div class="status" id="status">Press Start to bring the dog in</div>
+    </div>
+    <aside class="panel">
+      <div id="summary" class="summary" hidden></div>
+      <h2>Search log</h2>
+      <ol id="log" class="log"></ol>
+    </aside>
+  </main>
+
+  <dialog id="variations" class="variations">
+    <div class="variations-head">
+      <h2>Room variations</h2>
+      <div>
+        <button id="btn-more" class="btn">Shuffle</button>
+        <button id="btn-close" class="btn">Close</button>
+      </div>
+    </div>
+    <p class="hint">Pick a room to search.</p>
+    <div id="variations-grid" class="variations-grid"></div>
+  </dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

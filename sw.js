@@ -1,5 +1,5 @@
 // Offline support: serve from cache, refresh the cache in the background.
-const CACHE = 'dog-watch-v2';
+const CACHE = 'dog-watch-v3';
 const ASSETS = [
   './', 'index.html', 'style.css', 'manifest.webmanifest',
   'js/app.js', 'js/dog.js', 'js/nav.js', 'js/render.js', 'js/rng.js', 'js/room.js',

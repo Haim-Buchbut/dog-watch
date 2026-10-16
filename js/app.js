@@ -1,7 +1,7 @@
 import { generateRoom, describeRoom } from './room.js';
 import { randomSeedString } from './rng.js';
 import { Dog } from './dog.js';
-import { fitView, drawRoom, drawTrail, drawDog } from './render.js';
+import { fitView, drawRoom, drawDog } from './render.js';
 
 const $ = (id) => document.getElementById(id);
 const canvas = $('canvas');
@@ -45,7 +45,7 @@ function loadRoom(seed, push = true) {
 
 function logEvent(ev) {
   $('status').textContent =
-    ev.kind === 'sniff' ? `Sniffing ${ev.obj.label}` : ev.kind === 'sit' ? 'Dog pauses…' : 'Searching the floor';
+    ev.kind === 'sniff' ? 'Sniffing…' : ev.kind === 'sit' ? 'Dog pauses…' : 'Searching the floor';
 }
 
 async function start() {
@@ -129,11 +129,8 @@ function draw(time) {
   const view = fitView(state.room, w, h, 18);
   const { dog } = state;
   drawRoom(ctx, state.room, view, {
-    visited: $('opt-coverage').checked && state.hasRun ? new Set(dog.visits.keys()) : null,
-    highlight: dog.state === 'sniff' ? dog.target.obj.id : null,
     labels: $('opt-labels').checked,
   });
-  if (state.hasRun) drawTrail(ctx, dog.trail, view);
   drawDog(ctx, dog, view, state.running ? time : 0);
 }
 

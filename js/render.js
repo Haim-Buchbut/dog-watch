@@ -18,7 +18,7 @@ function rr(ctx, x, y, w, h, r) {
 
 export function drawRoom(ctx, room, view, opts = {}) {
   const { scale: k, ox, oy } = view;
-  const { visited = null, highlight = null, labels = false } = opts;
+  const { labels = false } = opts;
   ctx.save();
   ctx.translate(ox, oy);
 
@@ -74,17 +74,6 @@ export function drawRoom(ctx, room, view, opts = {}) {
   for (const o of room.objects) drawObject(ctx, o, k);
 
   for (const o of room.objects) {
-    if (visited && visited.has(o.id)) {
-      ctx.fillStyle = 'rgba(46, 160, 67, 0.22)';
-      rr(ctx, o.x * k, o.y * k, o.w * k, o.h * k, 3);
-      ctx.fill();
-    }
-    if (highlight === o.id) {
-      ctx.strokeStyle = '#f5a524';
-      ctx.lineWidth = Math.max(2, k * 0.05);
-      rr(ctx, o.x * k - 3, o.y * k - 3, o.w * k + 6, o.h * k + 6, 6);
-      ctx.stroke();
-    }
     if (labels) {
       ctx.fillStyle = 'rgba(20,20,20,0.75)';
       ctx.font = `${Math.max(9, k * 0.16)}px system-ui, sans-serif`;
@@ -206,24 +195,6 @@ function drawObject(ctx, o, k) {
       break;
     }
   }
-}
-
-export function drawTrail(ctx, trail, view) {
-  if (trail.length < 2) return;
-  const { scale: k, ox, oy } = view;
-  ctx.save();
-  ctx.translate(ox, oy);
-  ctx.lineCap = 'round';
-  ctx.lineWidth = Math.max(1.5, k * 0.04);
-  for (let i = 1; i < trail.length; i++) {
-    const a = i / trail.length;
-    ctx.strokeStyle = `rgba(214, 120, 30, ${0.05 + a * 0.4})`;
-    ctx.beginPath();
-    ctx.moveTo(trail[i - 1].x * k, trail[i - 1].y * k);
-    ctx.lineTo(trail[i].x * k, trail[i].y * k);
-    ctx.stroke();
-  }
-  ctx.restore();
 }
 
 // A Belgian Malinois seen from above: tan body, black mask, wagging tail.

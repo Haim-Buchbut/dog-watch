@@ -4,7 +4,7 @@ import { findPath } from './nav.js';
 import { randomFreePoint } from './room.js';
 
 const DIST_FALLOFF = 2.4; // metres; smaller = stronger preference for nearby objects
-const TURN_RATE = 7; // rad/s
+const TURN_RATE = 12; // rad/s
 
 export class Dog {
   constructor(room, rand = Math.random) {
@@ -26,8 +26,6 @@ export class Dog {
     this.speed = 1.1;
     this.visits = new Map(); // object id -> count
     this.recent = [];
-    this.trail = [{ x: this.x, y: this.y }];
-    this.trailClock = 0;
     this.ignored = new Set();
     this.sniffCount = 0;
   }
@@ -36,7 +34,7 @@ export class Dog {
     this.reset();
     this.now = now;
     // In ~70% of searches the dog never gets to some of the objects.
-    if (this.rng.chance(0.65)) {
+    if (this.rng.chance(0.7)) {
       const objs = this.rng.shuffle(this.room.objects);
       const n = Math.max(1, Math.round(objs.length * this.rng.range(0.1, 0.4)));
       objs.slice(0, n).forEach((o) => this.ignored.add(o.id));
@@ -49,10 +47,7 @@ export class Dog {
   }
 
   holdTime() {
-    const r = this.rng.rand();
-    if (r < 0.05) return this.rng.range(0.8, 1.4);
-    if (r < 0.8) return this.rng.range(2, 3);
-    return this.rng.range(5, 6);
+    return this.rng.range(1, 2);
   }
 
   pickObject() {
@@ -108,7 +103,7 @@ export class Dog {
     this.pathIdx = 1;
     this.target = { point, obj };
     this.state = 'move';
-    this.speed = this.rng.range(0.9, 1.35);
+    this.speed = this.rng.range(1.8, 2.7);
     return true;
   }
 
@@ -141,13 +136,6 @@ export class Dog {
       }
       this.timer -= dt;
       if (this.timer <= 0) this.decide();
-    }
-
-    this.trailClock += dt;
-    if (this.trailClock > 0.12) {
-      this.trailClock = 0;
-      this.trail.push({ x: this.x, y: this.y });
-      if (this.trail.length > 260) this.trail.shift();
     }
   }
 
